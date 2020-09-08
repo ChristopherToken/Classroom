@@ -3,9 +3,9 @@ let mode = "greeter";
 
 let ytPlayer = null;
 let klID = null;
+let klName = null;
 let ytVideoId = null;
 let jitsiPlayer = null;
-let klName = null;
 
 function updateVisibilities() {
 	if (mode === "greeter") {
@@ -15,6 +15,7 @@ function updateVisibilities() {
 		document.getElementById("greeter").style.display = "none";
 		document.getElementById("container").style.display = "block";
 	}
+	document.getElementById("splitter").style.height = (window.innerHeight-150) + "px";
 }
 
 function onYouTubePlayerReady(event) {
@@ -22,11 +23,6 @@ function onYouTubePlayerReady(event) {
 	event.target.playVideo();
 }
 function onYouTubePlayerStateChange(event) {
-	/*  if (event.data == YT.PlayerState.PLAYING && !done) {
-		setTimeout(stopVideo, 6000);
-		done = true;
-	  }
-	*/
 	if (event.data == YT.PlayerState.UNSTARTED) {
 		event.target.playVideo();
 	}
@@ -76,11 +72,14 @@ function roomCallback(data) {
 			roomName: jsData.jitsiRoom,
 			width: '100%',
 			height: '100%',
-			configOverwrite: { startWithAudioMuted: true, startWithVideoMuted: true },
+			configOverwrite: {
+				startWithAudioMuted: true,
+				startWithVideoMuted: true
+			},
 			parentNode: document.querySelector('#jitsiMeet')
 		};
 		const api = new JitsiMeetExternalAPI(domain, options);
-		console.log(api);
+		console.log("Jitsi API", api);
 		if (mode === "youtube") {
 			mode = "conference";
 		} else {
@@ -89,18 +88,18 @@ function roomCallback(data) {
 	}
 	const labelKlID = document.getElementById("labelKlID");
 	if (jsData.title) {
-		klName = jsData.klassenName;
+		klName = jsData.title;
 	}
 	if (klName) {
 		labelKlID.innerText = klName;
 	} else {
 		labelKlID.innerText = klID;
 	}
-
-	updateVisibilities()
+	updateVisibilities();
 };
+
 function startRoom() {
-	const klID = document.getElementById("klID").value;
+	klID = document.getElementById("klID").value;
 	console.log("Start Room", klID);
 
 	if (klID == "") {
@@ -113,6 +112,7 @@ function startRoom() {
 	dataexchange("api/room/" + klID + ".json", roomCallback);
 
 };
+
 // function is used for dragging and moving
 function dragElement(element, direction) {
 	var md; // remember mouse down info
@@ -160,24 +160,22 @@ function dragElement(element, direction) {
 function changeDia(val) {
 	const first = document.getElementById("first");
 	const second = document.getElementById("second");
-	document.getElementsByClassName('gutter-horizontal')[0].style.display = "block"
+	document.getElementsByClassName('gutter-horizontal')[0].style.display = "block";
 	first.style.display = "block";
 	second.style.display = "block";
 	console.log(val);
 
 	document.getElementById("spacer").style.display = "none";
-	document.getElementsByClassName('splitter')[0].style.display = "flex"
+	document.getElementsByClassName('splitter')[0].style.display = "flex";
 	if (val == '25:75') {
-
 		first.style.width = "25%";
 		second.style.width = "75%";
-	} else if (val == '75:25') {
-
+	}
+	else if (val == '75:25') {
 		first.style.width = "75%";
 		second.style.width = "25%";
 	}
 	else if (val == '50:50') {
-
 		if (screen.width <= 760) {
 			document.getElementsByClassName('gutter-horizontal')[0].style.display = "none"
 			document.getElementsByClassName('splitter')[0].style.display = "block"
@@ -194,18 +192,17 @@ function changeDia(val) {
 
 		first.style.width = "100%";
 		second.style.display = "none";
-		document.getElementsByClassName('splitter')[0].style.display = "block"
-		document.getElementsByClassName('gutter-horizontal')[0].style.display = "none"
+		document.getElementsByClassName('splitter')[0].style.display = "block";
+		document.getElementsByClassName('gutter-horizontal')[0].style.display = "none";
 
 	} else if (val == '100-conf') {
 		ytPlayer.pauseVideo();
 		console.log("testroom", ytPlayer);
 		first.style.display = "none";
 		second.style.width = "100%";
-		document.getElementsByClassName('splitter')[0].style.display = "block"
-		document.getElementsByClassName('gutter-horizontal')[0].style.display = "none"
+		document.getElementsByClassName('splitter')[0].style.display = "block";
+		document.getElementsByClassName('gutter-horizontal')[0].style.display = "none";
 	}
-
 }
 var leftPane = document.getElementById('first');
 var rightPane = document.getElementById('second');
@@ -238,7 +235,6 @@ paneSep.sdrag(function (el, pageX, startX, pageY, startY, fix) {
 	if (cur > window.innerWidth) {
 		cur = window.innerWidth;
 	}
-
 
 	var right = (100 - cur - 2);
 	leftPane.style.width = cur + '%';

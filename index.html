@@ -248,11 +248,18 @@ function changeDia(val){
 	else if(val == '50:50'){
 		 
 		 
-	 first.style.width =    "100%";
-        second.style.width =   "100%";
-	    document.getElementsByClassName('gutter-horizontal')[0].style.display ="none"
-		document.getElementsByClassName('splitter')[0].style.display ="block"  
-		document.getElementById("spacer").style.display = "block";
+	 
+		if(screen.width  <= 760) {
+		  document.getElementsByClassName('gutter-horizontal')[0].style.display ="none"
+		  document.getElementsByClassName('splitter')[0].style.display ="block"  
+		  document.getElementById("spacer").style.display = "block";
+		  first.style.width =    "100%";
+          second.style.width =   "100%";
+		} else {
+			 first.style.width =    "50%";
+			 second.style.width =   "50%";
+		}
+	   
 	}else if(val == '100-youtube'){
 		 ytPlayer.playVideo();
 		

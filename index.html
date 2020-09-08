@@ -54,11 +54,17 @@
 
 	</div><!-- container -->
 	<script>
-		//dragElement( document.getElementById("separator"), "H" );
 		Split(['#first', '#second'], {
 			sizes: [50, 50],
 			minSize: 200,
 		})
+		window.onload = function () {
+			console.log("Windows.onload")
+			if (window.location.pathname.substr(1) != "") {
+				document.getElementById("klID").value = window.location.pathname.substr(1);
+				startRoom();
+			}
+		}
 	</script>
 </body>
 

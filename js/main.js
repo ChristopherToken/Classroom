@@ -5,6 +5,7 @@ let ytPlayer = null;
 let klID = null;
 let klName = null;
 let ytVideoId = null;
+let vimeoID = null;
 let jitsiPlayer = null;
 
 function updateVisibilities() {
@@ -15,7 +16,7 @@ function updateVisibilities() {
 		document.getElementById("greeter").style.display = "none";
 		document.getElementById("container").style.display = "block";
 	}
-	document.getElementById("splitter").style.height = (window.innerHeight-150) + "px";
+	document.getElementById("splitter").style.height = (window.innerHeight-120) + "px";
 }
 
 function onYouTubePlayerReady(event) {
@@ -64,7 +65,7 @@ function roomCallback(data) {
 		var firstScriptTag = document.getElementsByTagName('script')[0];
 		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 		ytVideoId = jsData.ytLink;
-		mode = "youtube";
+		mode = "stream";
 	}
 
 	if (jsData.jitsiRoom) {
@@ -80,7 +81,7 @@ function roomCallback(data) {
 		};
 		const api = new JitsiMeetExternalAPI(domain, options);
 		console.log("Jitsi API", api);
-		if (mode === "youtube") {
+		if (mode === "stream") {
 			mode = "conference";
 		} else {
 			mode = "jitsi";
@@ -106,7 +107,6 @@ function startRoom() {
 		alert("Bitte Klassenzimmer-ID angeben");
 		return;
 	}
-	document.getElementById("heading").style.display = "none";
 	mode = "loading";
 	updateVisibilities();
 	dataexchange("api/room/" + klID + ".json", roomCallback);
@@ -187,8 +187,13 @@ function changeDia(val) {
 			second.style.width = "50%";
 		}
 
-	} else if (val == '100-youtube') {
-		ytPlayer.playVideo();
+	} else if (val == '100-stream') {
+		if (vimeoID !== null) {
+			alert("vimeo not implemented");
+		} else if (ytVideoId !== null) {
+			console.log("Switch to youtube only", ytPlayer);
+			ytPlayer.playVideo();
+		}
 
 		first.style.width = "100%";
 		second.style.display = "none";
@@ -196,8 +201,12 @@ function changeDia(val) {
 		document.getElementsByClassName('gutter-horizontal')[0].style.display = "none";
 
 	} else if (val == '100-conf') {
-		ytPlayer.pauseVideo();
-		console.log("testroom", ytPlayer);
+		if (vimeoID !== null) {
+			alert("vimeo not implemented");
+		} else if (ytVideoId !== null) {
+			console.log("Switch to jitsi only", ytPlayer);
+			ytPlayer.pauseVideo();
+		}
 		first.style.display = "none";
 		second.style.width = "100%";
 		document.getElementsByClassName('splitter')[0].style.display = "block";
